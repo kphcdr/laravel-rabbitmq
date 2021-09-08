@@ -98,6 +98,14 @@ class RabbitMQQueue extends Queue implements QueueContract
 
             return $message->getCorrelationId();
         } catch (\Exception $exception) {
+            $logger = $this->container['log'];
+
+            $logger->error("rabbitMq lost", [
+                "payload" => $payload,
+                "queue" => $queueName,
+                "option" => $options,
+            ]);
+
             $this->reportConnectionError('pushRaw', $exception);
 
             return;
